@@ -11,4 +11,4 @@ xhr.onreadystatechange = function() {
 // Taking in our star wars API
 xhr.open("GET", "https://ci-swapi.herokuapp.com/api");
 
-xhr.start();
+xhr.send();
