@@ -11,10 +11,11 @@ xhr.open("GET", "https://ci-swapi.herokuapp.com/api/");
 xhr.send();
 
 // Deserialising our JSON. JavaScript can deal with this with TIMEOUTS! and CALLBACKS!
-function setData() {
+/*function setData() {
     data = jsonData;
     console.log(data);
 }
+*/
 
 xhr.onreadystatechange = function() {
     // Reference: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
@@ -23,16 +24,17 @@ xhr.onreadystatechange = function() {
     // console.log(typeof(this.responseText)) -> 
     // typeof will check the data type
     // Logging our data variables but doesn't work as we need functional programming. 
-// As the data only true when (this.readyState == 4 && this.status == 200)
+    // As the data only true when (this.readyState == 4 && this.status == 200)
     if (this.readyState == 4 && this.status == 200) {
-        data = this.responseText;
-        console.log(data);
-        // This will now send through a JSON parsed object into our setData function
-        setData(json.parse(this.responseText));
+        data = JSON.parse(this.responseText);
     };
 };
 
-
+// Our timeout function takes two parameters. Our data variable and time 500 milliseconds as the second argument
+// Furthermore this gives our on readystatechange function time to get to readyState 4 before the data variable is called
+setTimeout(function () {
+    console.log(data);
+}, 500);
 
 /*
 JSON.parse()
@@ -65,6 +67,25 @@ xhr.onreadystatechange = function() {
         document.getElementById('data').innerHTML = this.responseText;
     };
 };
-
 */
+
+// Callback functions are useful as they allow us not to use setTimeout() functions
+// Writing a callback function (cb - callback)
+function getData(cb) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET, "https://ci-swapi.herokuapp.com/api");
+    xhr.send();
+
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.responseText == 200) {
+            cb(JSON.parse(this.responseText));
+        };
+    };
+}
+
+// This function will pass it self into the function above as an argument and log the data to the console.
+getData(function (data) {
+    console.log(data);
+})
 
