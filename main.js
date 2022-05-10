@@ -89,3 +89,93 @@ getData(function (data) {
     console.log(data);
 })
 
+// Remember typeof() checks the data type
+// Moving base API URL to outside the function
+
+//Getting the data onto the DOM
+//Const -> because it never changes
+
+
+//Our API call has came in the form of one big object we need to unpack containing an array of objects
+//Unpacking our Data onto the DOM 
+//Using console.dir(), where dir stands for directory, going to parse in our data and browse the properties
+//Rewriting our variable data into data.results to make it easier to see
+const baseURL = "https://ci-swapi.herokuapp.com/api";
+
+function getData(type, cb) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", baseURL + type + "/");
+    xhr.send();
+
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.responseText == 200) {
+            cb(JSON.parse(this.responseText));
+        };
+    };
+}
+
+function writeToDocument(type) {
+    //creating an element variable to store each part into
+    var el = document.getElementById("data");
+    //will add the element above to an empty string each time the button is pressed
+    el.innerHTML = "";
+    getData(type, function() {
+        //console.dir("data");
+        data = data.results;
+        //creating for a foreach loop to unpack the object "for each" property/value
+        data.foreach(function(item) {
+            //need a += to add each element
+            //adding paragraph tags <p></p> to make it display the data more clear 
+            document.getElementById("data").innerHTML += "<p>" + item.name + "</p>";
+        });
+    });
+};
+
+//Creating tables for data
+//Storing data as tablular data
+const baseURL = "https://ci-swapi.herokuapp.com/api";
+
+function getData(type, cb) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", baseURL + type + "/");
+    xhr.send();
+
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.responseText == 200) {
+            cb(JSON.parse(this.responseText));
+        };
+    };
+}
+
+function getTableHeaders(obj) {
+    var tableHeaders = [];
+    //Iterating over each object
+    Object.keys(obj).forEach(function(keys) {
+        //push each key and <td></td> to create a new table cell at the same time, using backticks`` - template literals to put key inside table cell
+        tableHeaders.push(`<td>${key}</td>`);
+    });
+    //``backticks allowing us to interpolate strings and variables as such
+    return `<tr>${tableHeaders}</tr>`;
+}
+
+function writeToDocument(type) {
+    var el = document.getElementById("data");
+    el.innerHTML = "";
+    getData(type, function(data) {
+        data = data.results;
+        var tableHeaders = getTableHeaders(data[0]);
+
+        data.foreach(function(item) {
+            //Want to iterate over all keys to create a table
+            Object.keys(item).forEach(function() {
+                console.log(key);
+            })
+            //el.innerHTML += "<p>" + item.name + "</p>";
+        });
+
+        el.innerHTML = `<table>${tableHeaders}</table>`;
+    });
+};
+
