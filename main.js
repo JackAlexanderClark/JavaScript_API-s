@@ -3,6 +3,60 @@
  *  XMLHttpRequest is a built-in object that allows us to consume APIs with javaScript
  **/ 
 
+//Completed API data call into HTML table
+//Iterated over the data that is coming from our API
+const baseURL = "https://ci-swapi.herokuapp.com/api/";
+
+function getData(type, cb) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            cb(JSON.parse(this.responseText));
+        }
+    };
+
+    xhr.open("GET", baseURL + type + "/");
+    xhr.send();
+}
+
+function getTableHeaders(obj) {
+    var tableHeaders = [];
+
+    Object.keys(obj).forEach(function(key) {
+        tableHeaders.push(`<td>${key}</td>`)
+    });
+
+    return `<tr>${tableHeaders}</tr>`;
+}
+
+function writeToDocument(type) {
+    var tableRows = [];
+    var el = document.getElementById("data");
+
+    getData(type, function(data) {
+        data = data.results;
+        var tableHeaders = getTableHeaders(data[0]);
+
+        data.forEach(function(item) {
+            var dataRow = [];
+            Object.keys(item).forEach(function(key) {
+                var rowData = item[key].toString();
+                var truncatedData = rowData.substring(0, 15);
+                //Truncating data allows us to shorten the data so it fits in nicely without being oversize
+                dataRow.push(`<td>${truncatedData}</td>`);
+            });
+            tableRows.push(`<tr>${dataRow}</tr>`)
+        });
+
+        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>`;
+    });
+}
+
+
+
+
+
 // Creating variables
 var xhr = new XMLHttpRequest();
 var data;
@@ -161,6 +215,8 @@ function getTableHeaders(obj) {
 }
 
 function writeToDocument(type) {
+    var tableRows = [];
+
     var el = document.getElementById("data");
     el.innerHTML = "";
     getData(type, function(data) {
@@ -170,12 +226,19 @@ function writeToDocument(type) {
         data.foreach(function(item) {
             //Want to iterate over all keys to create a table
             Object.keys(item).forEach(function() {
-                console.log(key);
-            })
+            });
+            var dataRow = [];
+
+            //Pushing each element into our row by iteration
+            Object.keys(item).forEach(function() {
+                dataRow.push(`<td>${item[key]}</td>`)
+            });
+            tableRows.push(dataRow);
+            //will create a new row for each record in the array
             //el.innerHTML += "<p>" + item.name + "</p>";
         });
 
-        el.innerHTML = `<table>${tableHeaders}</table>`;
+        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>`;
     });
 };
 
